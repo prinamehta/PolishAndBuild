@@ -6,11 +6,14 @@ public class GameManager : SingletonMonoBehavior<GameManager>
     [SerializeField] private Ball ball;
     [SerializeField] private Transform bricksContainer;
 
+    AudioManager audioManager;
+
     private int currentBrickCount;
     private int totalBrickCount;
 
     private void OnEnable()
     {
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
         InputHandler.Instance.OnFire.AddListener(FireBall);
         ball.ResetBall();
         totalBrickCount = bricksContainer.childCount;
@@ -30,6 +33,7 @@ public class GameManager : SingletonMonoBehavior<GameManager>
     public void OnBrickDestroyed(Vector3 position)
     {
         // fire audio here
+        audioManager.PlaySFX(audioManager.hitBlock);
         // implement particle effect here
         // add camera shake here
         currentBrickCount--;
@@ -44,4 +48,5 @@ public class GameManager : SingletonMonoBehavior<GameManager>
         // game over UI if maxLives < 0, then exit to main menu after delay
         ball.ResetBall();
     }
+
 }
