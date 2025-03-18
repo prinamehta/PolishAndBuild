@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using TMPro;
 
 public class GameManager : SingletonMonoBehavior<GameManager>
 {
@@ -10,6 +11,10 @@ public class GameManager : SingletonMonoBehavior<GameManager>
 
     private int currentBrickCount;
     private int totalBrickCount;
+
+    public int currentBrick;
+
+    public TextMeshProUGUI brickText;
 
     private void OnEnable()
     {
@@ -49,4 +54,10 @@ public class GameManager : SingletonMonoBehavior<GameManager>
         ball.ResetBall();
     }
 
+    public void AddBrick(int brickToAdd)
+    {
+            currentBrick += brickToAdd;
+
+            brickText.text = "Score: " + currentBrick;
+    }
 }
