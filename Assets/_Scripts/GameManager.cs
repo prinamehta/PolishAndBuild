@@ -1,7 +1,9 @@
 ﻿using UnityEngine;
+
 using UnityEngine.UI;
 using TMPro;
 using System.Collections;
+
 
 public class GameManager : SingletonMonoBehavior<GameManager>
 {
@@ -19,6 +21,7 @@ public class GameManager : SingletonMonoBehavior<GameManager>
     public int currentBrick;
 
     public TextMeshProUGUI brickText;
+
 
     private void Start()
     {
@@ -107,8 +110,17 @@ public class GameManager : SingletonMonoBehavior<GameManager>
         yield break;
     }
 
+
+    public void AddBrick(int brickToAdd)
+    {
+            currentBrick += brickToAdd;
+
+            brickText.text = "Score: " + currentBrick;
+    }
+
     Time.timeScale = 1;
     Debug.Log("Loading Menu Scene...");
     SceneHandler.Instance.LoadMenuScene();
 }
+
 }
