@@ -1,11 +1,17 @@
 ﻿using UnityEngine;
+
+using UnityEngine.UI;
 using TMPro;
+using System.Collections;
+
 
 public class GameManager : SingletonMonoBehavior<GameManager>
 {
     [SerializeField] private int maxLives = 3;
     [SerializeField] private Ball ball;
     [SerializeField] private Transform bricksContainer;
+    [SerializeField] private Text livesText;
+    [SerializeField] private GameObject gameOverScreen;
 
     AudioManager audioManager;
 
@@ -15,6 +21,16 @@ public class GameManager : SingletonMonoBehavior<GameManager>
     public int currentBrick;
 
     public TextMeshProUGUI brickText;
+
+
+    private void Start()
+    {
+        UpdateLivesUI();
+        if (gameOverScreen != null)
+        {
+            gameOverScreen.SetActive(false);
+        }
+    }
 
     private void OnEnable()
     {
@@ -50,8 +66,16 @@ public class GameManager : SingletonMonoBehavior<GameManager>
     {
         maxLives--;
         // update lives on HUD here
-        // game over UI if maxLives < 0, then exit to main menu after delay
-        ball.ResetBall();
+        UpdateLivesUI();
+        // game over UI if maxLives < 1, then exit to main menu after delay
+        if (maxLives < 1)
+        {
+            StartCoroutine(GameOverSequence());
+        }
+        else
+        {
+            ball.ResetBall();
+        }
     }
 
     public void AddBrick(int brickToAdd)
@@ -60,4 +84,43 @@ public class GameManager : SingletonMonoBehavior<GameManager>
 
             brickText.text = "Score: " + currentBrick;
     }
+
+    private void UpdateLivesUI()
+{
+    if (livesText != null)
+    {
+        livesText.text = "Lives: " + maxLives;
+    }
+}
+    private IEnumerator GameOverSequence()
+{
+    Debug.Log("Game Over!");
+    Time.timeScale = 0;
+   if (gameOverScreen != null)
+{
+    gameOverScreen.SetActive(true);
+}
+
+
+    yield return new WaitForSecondsRealtime(1.5f);
+
+    if (SceneHandler.Instance == null)
+    {
+        Debug.LogError("SceneHandler instance is null! Make sure SceneHandler exists in the scene.");
+        yield break;
+    }
+
+
+    public void AddBrick(int brickToAdd)
+    {
+            currentBrick += brickToAdd;
+
+            brickText.text = "Score: " + currentBrick;
+    }
+
+    Time.timeScale = 1;
+    Debug.Log("Loading Menu Scene...");
+    SceneHandler.Instance.LoadMenuScene();
+}
+
 }
